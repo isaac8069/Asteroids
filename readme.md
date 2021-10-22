@@ -2,13 +2,13 @@
 
 **Asteroids** is a space-themed multidirectional shooter arcade game. The player controls a single spaceship in an asteroid field which is periodically traversed by flying saucers. The object of the game is to shoot and destroy the asteroids and saucers, while not colliding with either, or being hit by the saucers' counter-fire. The game becomes harder as the number of asteroids increases.
 
-## Tech Stack:
+## Tech Stack
 HTML, CSS, Javascript, Canvas (maybe)
 
-## Wireframes of my game:
+## Wireframes of my game
 https://whimsical.com/asteroids-WDUmWKoEh1vQBY9ZsxNoJn
 
-## MVP Goals:
+## MVP Goals
 
 *MVP stands for minimum viable product. It is a commonly used term in software development to refer to the base requirements of a finished product. Without this idea, the fear is that projects will never be released because we will always be adding features or improving things, even though a "perfect project" is not actually possible.* 
 
