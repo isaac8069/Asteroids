@@ -1,9 +1,9 @@
 # **Asteroids: An Intergalatic Battlefield**
 
-**Asteroids** is a space-themed multidirectional shooter arcade game. The player controls a single spaceship in an asteroid field which is periodically traversed by flying saucers. The object of the game is to shoot and destroy the asteroids and saucers, while not colliding with either, or being hit by the saucers' counter-fire. The game becomes harder as the number of asteroids increases.
+**Asteroids** is a space-themed multidirectional shooter arcade game. The player controls a single spaceship in an asteroid field which is periodically traversed by flying saucers. The object of the game is to shoot and destroy the asteroids and saucers, while not colliding with either. The game becomes harder as the number of asteroids increases.
 
 ## Tech Stack
-HTML, CSS, Javascript, Canvas (maybe)
+HTML, CSS, Javascript
 
 ## Wireframes of my game
 https://whimsical.com/asteroids-WDUmWKoEh1vQBY9ZsxNoJn
@@ -35,7 +35,6 @@ https://whimsical.com/asteroids-WDUmWKoEh1vQBY9ZsxNoJn
     * Objects 
         * Asteroids and UFO’s are moving across the page randomly
         * Player movement is with arrow keys/w,a,s,d and space bar is used to shoot
-    * UFO’s are shooting back
     * The longer the game goes the harder it gets
     * You win by achieving a certain score (not yet set)
     * When you lose
@@ -44,7 +43,9 @@ https://whimsical.com/asteroids-WDUmWKoEh1vQBY9ZsxNoJn
         * You must hit restart to continue
 
 ## Stretch Goals
+* Implementing Canvas
 * Better design visually
+* Adding shooting for UFO's
 * Add powerUps
 * Add a second player and operational functionality
 * Add another level
