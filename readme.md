@@ -6,7 +6,8 @@
 HTML, CSS, Javascript
 
 ## Wireframes of my game
-https://whimsical.com/asteroids-WDUmWKoEh1vQBY9ZsxNoJn
+![Asteroids@2x](https://user-images.githubusercontent.com/90520586/138520238-f38e6db3-57de-4169-88bf-a29af6819ec5.png)
+
 
 ## MVP Goals
 
