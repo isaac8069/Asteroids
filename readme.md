@@ -13,16 +13,19 @@ HTML, CSS, Javascript
 
 *MVP stands for minimum viable product. It is a commonly used term in software development to refer to the base requirements of a finished product. Without this idea, the fear is that projects will never be released because we will always be adding features or improving things, even though a "perfect project" is not actually possible.* 
 
-* Meet all technical requirements
-    * Display a game in the browser
-    * Switch turns between two players, or have the user play the computer (AI or obstacles)
-    * Design logic for winning & visually display which player won
-    * Include separate HTML / CSS / JavaScript files
-    * Stick with KISS (Keep It Simple Stupid) and DRY (Don't Repeat Yourself) principles
-    * Use Javascript for DOM manipulation
-    * Deploy your game online, where the rest of the world can access it**
-    * Use semantic markup for HTML and CSS (adhere to best practices)
-        **We will be covering deployment before the end of the project.
+* MVP Goals
+    * Put canvas on screen
+    * Put spaceship (Player) on canvas
+    * Get the spaceship (Player) to moves around
+    * Get the spaceship to shoot
+    * Put asteroid on canvas
+    * Get the asteroid to move from one direction of the screen to the other side
+    * Make bullets have an effect
+    * Put UFO's on the canvas
+    * Get the UFO's to move from one direction of the screen to the other side
+    * Make bullets affect asteroids and UFO's
+    * Bad guys (asteroids and UFO's) make me lose a life
+    * Shooting bad guys add to the score       
 
 * Functional game breakdown
     * Start, Restart, and Instructions buttons functionally working
@@ -32,24 +35,26 @@ HTML, CSS, Javascript
     * Lives render on screen 
         * They decrease by one every time you die 
         * If you die with no lives left the game ends
-        * Sounds are performing for when Player shoots, asteroids explode from being shot, player crashes, UFO’s fly around and when they shoot
     * Objects 
-        * Asteroids and UFO’s are moving across the page randomly
+        * Asteroids and UFO’s are moving across in a straight line
         * Player movement is with arrow keys/w,a,s,d and space bar is used to shoot
-    * The longer the game goes the harder it gets
     * You win by achieving a certain score (not yet set)
     * When you lose
         * Game Over flashes on the screen
-        * A sound is made to indicate that you lost 
         * You must hit restart to continue
 
 ## Stretch Goals
+* Sounds are performing for when Player shoots, asteroids explode from being shot, player crashes, UFO’s fly around and when they shoot
+* A sound is made to indicate that you lost 
 * Implementing Canvas
+* The longer the game goes the harder it gets
 * Better design visually
 * Adding shooting for UFO's
 * Add powerUps
 * Add a second player and operational functionality
 * Add another level
+* Having bad guys coming in all different directions
+* Player is moving and shooting in all directions
 
 ## Any Potential Roadblocks
 * Logging score
