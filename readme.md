@@ -24,7 +24,8 @@ MVP stands for minimum viable product. It is a commonly used term in software de
 **We will be covering deployment before the end of the project.
 
 * Functional game breakdown
-* * Start and Restart buttons functionally working
+* * Start, Restart, and Instructions buttons functionally working
+* * Instructions button takes you to a page that explains the object of the game, how to play the game, and how to win
 * * Game is logging score
 * * Background image remains the same
 * * Lives render on screen 
