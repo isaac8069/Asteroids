@@ -1,0 +1,33 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+body {
+  background: rgb(140, 183, 181);
+  padding-top: 1em;
+  text-align: center;
+  background-size: cover;
+  background-repeat: space;
+}
+
+h1, h2 {
+  font-family: 'Press Start 2P' monospace;
+  color: rgb(50, 60, 62)
+}
+
+#container {
+  /* max-width changes the size of the gaming box */
+  max-width: 55em; 
+  margin: 0 auto;
+  padding: 1em;
+  display: flow-root;
+  grid-gap: 1em;
+  background-color: rgb(80, 168, 169);
+}
+
+#canvas {
+  border: 5px solid whitesmoke;
+  width: 100%;
+  height: 100%;
+  /* margin-left: 40px; */
+}
