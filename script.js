@@ -3,6 +3,7 @@ window.onload = function() {
     // document.body.addEventListener("keydown", HandleKeyDown)
     // document.body.addEventListener("keyup", HandleKeyUp)
     const canvas = document.getElementById("canvas")
+    canvas.height = 600
     const ctx = canvas.getContext("2d")
     // this is the movement tracker
     // const moveDisplay = document.getElementById("movement")
@@ -15,13 +16,11 @@ window.onload = function() {
     // console.log('current game width', game.width)
     // console.log('current game height', game.height)
     
-    // const keys = []
+    let score = 0
 
     // set canvas dimensions to window height and width
-    const W = window.innerWidth
-    const H = window.innerHeight
-    canvas.width = W
-    canvas.height = H
+    const W = canvas.width
+    const H = canvas.height
 
     // generate the flakes and apply attributes
     const mf = 100 // max number of flakees
@@ -29,51 +28,51 @@ window.onload = function() {
 
 /////////////////////////////COOL BACKGROUND/////////////////////////////////////////
     // loop through the empty flakes and apply attributes
-//     for(let i = 0; i < mf; i++) {
-//         flakes.push({
-//             x: Math.random()*W,
-//             y: Math.random()*H,
-//             r: Math.random()*5+2, // min of 2px and max of 7px
-//             d: Math.random() + 1 // density of the flake
-//         })
-//     }
+    // for(let i = 0; i < mf; i++) {
+    //     flakes.push({
+    //         x: Math.random()*W,
+    //         y: Math.random()*H,
+    //         r: Math.random()*5+2, // min of 2px and max of 7px
+    //         d: Math.random() + 1 // density of the flake
+    //     })
+    // }
 
-//     // draw flakes onto canvas
-//     function drawFlakes() {
-//         ctx.clearRect(0, 0, W, H)
-//         ctx.fillStyle = "white"
-//         ctx.beginPath()
-//         for(let i = 0; i < mf; i++) {
-//             const f = flakes[i]
-//             ctx.moveTo(f.x, f.y)
-//             ctx.arc(f.x, f.y, f.r, 0, Math.PI*2, true)
-//         }
-//         ctx.fill();
-//         moveFlakes()
-//     }
+    // // draw flakes onto canvas
+    // function drawFlakes() {
+    //     ctx.clearRect(0, 0, W, H)
+    //     ctx.fillStyle = "white"
+    //     ctx.beginPath()
+    //     for(let i = 0; i < mf; i++) {
+    //         const f = flakes[i]
+    //         ctx.moveTo(f.x, f.y)
+    //         ctx.arc(f.x, f.y, f.r, 0, Math.PI*2, true)
+    //     }
+    //     ctx.fill();
+    //     moveFlakes()
+    // }
 
-//     // animate the flakes
-//     let angle = 0
+    // // animate the flakes
+    // let angle = 0
 
-//     function moveFlakes(){
-//         angle += 0.01
-//         for(let i = 0; i < mf; i++) {
+    // function moveFlakes(){
+    //     angle += 0.01
+    //     for(let i = 0; i < mf; i++) {
 
-//             //store current flake
-//             let f = flakes[i]
+    //         //store current flake
+    //         let f = flakes[i]
 
-//             // update x and y coordinates of each flake
-//             f.y += Math.pow(f.d, 2) + 1
-//             f.x += Math.sin(angle) * 2
+    //         // update x and y coordinates of each flake
+    //         f.y += Math.pow(f.d, 2) + 1
+    //         f.x += Math.sin(angle) * 2
 
-//             // if flake reaches the bottom, send a new one to the top
-//             if(f.y > H) {
-//                 flakes[i] = {x: Math.random()*W, y: 0, r: f.r, d: f.d}
-//             }
-//         }
-//     }
+    //         // if flake reaches the bottom, send a new one to the top
+    //         if(f.y > H) {
+    //             flakes[i] = {x: Math.random()*W, y: 0, r: f.r, d: f.d}
+    //         }
+    //     }
+    // }
 
-//     setInterval(drawFlakes, 25)
+    // setInterval(drawFlakes, 25)
 
 
 /////////////////////////////END COOL BACKGROUND/////////////////////////////////////
@@ -86,8 +85,14 @@ const moveDisplay = document.getElementById('movement')
 
 // we're setting up height and width variables BASED ON computed style
 // that means we're using setAttribute in conjunction with getComputedStyle
+
+/// Sets the value of an attribute on the specified element. If the attribute already exists, the value is updated; otherwise a new attribute is added with the specified name and value. ///
+
 game.setAttribute('width', getComputedStyle(game)['width'])
 game.setAttribute('height', getComputedStyle(game)['height'])
+
+/// The Window.getComputedStyle() method returns an object containing the values of all CSS properties of an element, after applying active stylesheets and resolving any basic computation those values may contain. ///
+
 // check out the varying attributes width and height!
 // console.log('current game width', game.width)
 // console.log('current game height', game.height)
@@ -97,12 +102,15 @@ game.setAttribute('height', getComputedStyle(game)['height'])
 const ctx = game.getContext('2d')
 
 // we're going to follow some sorta basic Object Oriented Programming 'rules' to build an interactive game
-// we'll create objects for our player and our asteroids
+
+/// Object-oriented programming (OOP) is a programming paradigm based on the concept of "objects", which can contain data and code: data in the form of fields (often known as attributes or properties), and code, in the form of procedures (often known as methods). ///
+
+// we'll create objects for our player and our asteroid
 // we'll give them their own 'draw' methods to place them on the canvas
 
 // in javascript, there are two ways to create classes, which build objects.
 // the first 'older' method, would be using a class
-class Asteroids {
+class Enemy {
     constructor(x, y, color, width, height) {
         this.x = x
         this.y = y
@@ -114,6 +122,27 @@ class Asteroids {
     render = function () {
         ctx.fillStyle = this.color
         ctx.fillRect(this.x, this.y, this.width, this.height)
+        // ctx.beginPath();
+        // ctx.arc(100, 75, 50, 0, 2 * Math.PI);
+        // ctx.stroke();
+    }
+}
+
+class Enemy2 {
+    constructor(x, y, color, width, height) {
+        this.x = x
+        this.y = y
+        this.color = color
+        this.width = width
+        this.height = height
+        this.alive = true
+    }
+    render = function () {
+        ctx.fillStyle = this.color
+        ctx.fillRect(this.x, this.y, this.width, this.height)
+        // ctx.beginPath();
+        // ctx.arc(100, 75, 50, 0, 2 * Math.PI);
+        // ctx.stroke();
     }
 }
 
@@ -143,7 +172,10 @@ class PlayerShip {
         if (key.toLowerCase() == 's') this.direction.down = true
         if (key.toLowerCase() == 'd') this.direction.right = true
     }
+
     // we also need to consider keyup events and 'unset' that direction
+    /// The keyup event is sent to an element when the user releases a key on the keyboard. It can be attached to any element, but the event is only sent to the element that has the focus. Focusable elements can vary between browsers, but form elements can always get focus so are reasonable candidates for this event type.///
+
     unsetDirection(key) {
         if (key.toLowerCase() == 'w') this.direction.up = false
         if (key.toLowerCase() == 'a') this.direction.left = false
@@ -173,35 +205,66 @@ class PlayerShip {
 	render = function () {
 		ctx.fillStyle = this.color
 		ctx.fillRect(this.x, this.y, this.width, this.height, this.speed)
+        // Shadow
+        ctx.shadowColor = 'green';
+        ctx.shadowBlur = 15;
 	}
 }
 
 
-const randomPlaceShrekX = (max) => {
+const randomAsteroid = (max) => {
     return Math.floor(Math.random() * max)
 }
 
-console.log('this is rando shrek x', randomPlaceShrekX(game.width))
+console.log('this is rando asteroid x', randomAsteroid(game.width))
 
-let player = new PlayerShip(10, 10, 'yellow', 25, 25)
-let asteroids = new Asteroids(randomPlaceShrekX(game.width), 50, 'blue', 32, 48)
-let asteroidTwo = new Asteroids(randomPlaceShrekX(game.width), 45, 'red', 32, 48)
-console.log('this is the player', player)
-console.log('this is the asteroids', asteroids)
+let player = new PlayerShip((game.width / 2), 600, 'yellow', 25, 25)
+console.log(game.height)
+/// constructor(x, y, color, width, height)///
 
+let asteroidArr = []
+let ufoArr = []
+
+setInterval(()=> {
+    /// create a new ufo///
+    let ufo = new Enemy2(randomAsteroid(game.width), 0, 'red', 32, 48)
+    console.log('this is the player', player)
+    /// this can be done with the line ufoArr.push(ufo)
+    ufoArr.push(ufo)
+    /// inside my game loop I will need to loop over ufoArr, and call ufo[i].render() if/when you detect a hit with the ufo, you'll need to splice it from the array so it no longer shows up while rendering ///
+
+})
+
+
+
+
+
+setInterval(() => {
+    /// create a new asteroid///
+    let asteroid = new Enemy(randomAsteroid(game.width), 0, 'blue', 27, 27)
+    /// this can be done with the line asteroidArr.push(asteroid)
+    asteroidArr.push(asteroid)
+    /// inside my game loop I will need to loop over asteroidArr, and call asteroid[i].render() if/when you detect a hit with the asteroid, you'll need to splice it from the array so it no longer shows up while rendering ///
+    
+  }, 2000);
+  setTimeout(() => { clearInterval(asteroidArr); alert('Game Over!'); }, 120000)
 
 // make collision detection
-// writing logic that determines if any part of our player square touches any part of our asteroids
+// writing logic that determines if any part of our player square touches any part of our asteroid
+
 // update detect hit, to take a variable(parameter) to use it on multiple things
+const thing = asteroidArr
 const detectHit = (thing) => {
-    // if the player's x + width or y + height hits the asteroids's x+width or y+height, kill shrek
+    // if the player's x + width or y + height hits the asteroid's x+width or y+height, kill asteroid
     if (
+        /// x-axis = horizontal(width) and y-axis = vertical(height) ...if player x axis < thing(asteroids/ufo) x axis + thing width && player x axis + player.width > thing x axis && player y axis < thing y axis + thing.height && player y axis + player.height > thing.y THING.ALIVE is false and the asteroid/ufo has been killed///
+        
         player.x < thing.x + thing.width &&
         player.x + player.width > thing.x &&
         player.y < thing.y + thing.height &&
         player.y + player.height > thing.y
     ) {
-        // kill shrek
+        // kill asteroid
         thing.alive = false
         // end the game
         document.querySelector('#btmRight > h2').innerText = 'NICE!'
@@ -215,24 +278,31 @@ const detectHit = (thing) => {
 const gameLoop = () => {
     // clear the canvas
     ctx.clearRect(0, 0, game.width, game.height)
+    console.log(asteroidArr)
+    /// The CanvasRenderingContext2D.clearRect() method of the Canvas 2D API erases the pixels in a rectangular area by setting them to transparent black. Note: Be aware that clearRect() may cause unintended side effects if you're not using paths properly. Make sure to call beginPath() before starting to draw new items after calling clearRect().///
   
     // display relevant game state(player movement) in our movement display
     moveDisplay.innerText = `X: ${player.x}\nY: ${player.y}`
-    // check if the asteroids is alive, if so, render the asteroids
     player.render()
-    if (asteroids.alive) {
-        asteroids.render()
-        // add in our detection to see if the hit has been made
-        detectHit(asteroids)
-    } else if (asteroidTwo.alive) {
-        document.querySelector('#btmRight > h2').innerText = 'Now Kill Asteroid 2!'
-        asteroidTwo.render()
-        detectHit(asteroidTwo)
-    } else {
-        stopGameLoop()
-        document.querySelector('#btmRight > h2').innerText = 'You Win!'
+    // check if the asteroid is alive, if so, render the asteroid
+    for(let i = 0; i < asteroidArr.length; i++) {
+        
+        if (asteroidArr[i].alive) {
+            asteroidArr[i].render()
+            asteroidArr[i].y++
+            // add in our detection to see if the hit has been made
+            detectHit(asteroidArr[i])
+        } else if (ufoArr[i].alive) {
+            document.querySelector('#btmRight > h2').innerText = 'Watch out for the UFOs!'
+            ufoArr[i].render()
+            ufoArr[i].y++
+            detectHit(ufoArr[i])
+        } else {
+            stopGameLoop()
+            document.querySelector('#btmRight > h2').innerText = 'You Lose!'
+        }
     }
-    // when asteroids 1 dies, show asteroids 2, run detect hit on asteroids 2, but make the logic dependent on that asteroids's alive
+    // when asteroid 1 dies, spawn UFO's, run detect hit on UFO's, but make the logic dependent on that asteroid's alive
     // render our player
     player.movePlayer()
 }
@@ -259,47 +329,3 @@ document.addEventListener('keyup', (e) => {
 // the timing function will determine how and when our game animates
 let gameInterval = setInterval(gameLoop, 60)
 
-
-
-
-class Asteroid{
-    constructor(x,y,radius,level,collisionRadius) {
-        this.visible = true;
-        this.x = x || Math.floor(Math.random() * canvasWidth);
-        this.y = y || Math.floor(Math.random() * canvasHeight);
-        this.speed = 3;
-        this.radius = radius || 50;
-        this.angle = Math.floor(Math.random() * 359);
-        this.strokeColor = 'white';
-        this.collisionRadius = collisionRadius || 46;
-        // Used to decide if this asteroid can be broken into smaller pieces
-        this.level = level || 1;  
-    }
-    Update(){
-        let radians = this.angle / Math.PI * 180;
-        this.x += Math.cos(radians) * this.speed;
-        this.y += Math.sin(radians) * this.speed;
-        if (this.x < this.radius) {
-            this.x = canvas.width;
-        }
-        if (this.x > canvas.width) {
-            this.x = this.radius;
-        }
-        if (this.y < this.radius) {
-            this.y = canvas.height;
-        }
-        if (this.y > canvas.height) {
-            this.y = this.radius;
-        }
-    }
-    Draw(){
-        ctx.beginPath();
-        let vertAngle = ((Math.PI * 2) / 6);
-        var radians = this.angle / Math.PI * 180;
-        for(let i = 0; i < 6; i++){
-            ctx.lineTo(this.x - this.radius * Math.cos(vertAngle * i + radians), this.y - this.radius * Math.sin(vertAngle * i + radians));
-        }
-        ctx.closePath();
-        ctx.stroke();
-    }
-}

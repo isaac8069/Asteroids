@@ -23,6 +23,7 @@ h1, h2 {
   display: flow-root;
   grid-gap: 1em;
   background-color: rgb(80, 168, 169);
+  /* background-color: black; */
 }
 
 #canvas {
