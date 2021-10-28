@@ -16,7 +16,7 @@ window.onload = function() {
     // console.log('current game width', game.width)
     // console.log('current game height', game.height)
     
-    let score = 0
+    
 
     // set canvas dimensions to window height and width
     const W = canvas.width
@@ -164,8 +164,9 @@ class PlayerShip {
         }
     
 	}
+    
     setDirection(key) {
-        console.log('the key pressed', key)
+        // console.log('the key pressed', key)
         // pressing key moves the character in direction
         if (key.toLowerCase() == 'w') this.direction.up = true
         if (key.toLowerCase() == 'a') this.direction.left = true
@@ -211,12 +212,21 @@ class PlayerShip {
 	}
 }
 
+let points = 0
+let score = document.getElementById("btmLeft")
+score.innerText = `Score: ${points}`
+
+function updatePoints() {
+    points += 10
+    score.innerText = `Score: ${points}`
+    console.log(points)
+}
 
 const randomAsteroid = (max) => {
     return Math.floor(Math.random() * max)
 }
 
-console.log('this is rando asteroid x', randomAsteroid(game.width))
+// console.log('this is rando asteroid x', randomAsteroid(game.width))
 
 let player = new PlayerShip((game.width / 2), 600, 'yellow', 25, 25)
 console.log(game.height)
@@ -228,7 +238,7 @@ let ufoArr = []
 setInterval(()=> {
     /// create a new ufo///
     let ufo = new Enemy2(randomAsteroid(game.width), 0, 'red', 32, 48)
-    console.log('this is the player', player)
+    // console.log('this is the player', player)
     /// this can be done with the line ufoArr.push(ufo)
     ufoArr.push(ufo)
     /// inside my game loop I will need to loop over ufoArr, and call ufo[i].render() if/when you detect a hit with the ufo, you'll need to splice it from the array so it no longer shows up while rendering ///
@@ -264,6 +274,8 @@ const detectHit = (thing) => {
         player.y < thing.y + thing.height &&
         player.y + player.height > thing.y
     ) {
+        updatePoints()
+
         // kill asteroid
         thing.alive = false
         // end the game
@@ -278,7 +290,7 @@ const detectHit = (thing) => {
 const gameLoop = () => {
     // clear the canvas
     ctx.clearRect(0, 0, game.width, game.height)
-    console.log(asteroidArr)
+    // console.log(asteroidArr)
     /// The CanvasRenderingContext2D.clearRect() method of the Canvas 2D API erases the pixels in a rectangular area by setting them to transparent black. Note: Be aware that clearRect() may cause unintended side effects if you're not using paths properly. Make sure to call beginPath() before starting to draw new items after calling clearRect().///
   
     // display relevant game state(player movement) in our movement display
@@ -313,14 +325,14 @@ let stopGameLoop = () => {clearInterval(gameInterval)}
 // /using a different event handler for smooth movement
 // we have two events now that we need to determine, we also will need to call player.move in the gameloop
 document.addEventListener('keydown', (e) => {
-    console.log('keydown', 'setDirection')
+    // console.log('keydown', 'setDirection')
     player.setDirection(e.key)
 })
 // this will unset direction
 document.addEventListener('keyup', (e) => {
-    console.log('keyup')
+    // console.log('keyup')
     if(['w', 'a', 's', 'd'].includes(e.key)) {
-        console.log('unsetDirection')
+        // console.log('unsetDirection')
         player.unsetDirection(e.key)
     }
 })
