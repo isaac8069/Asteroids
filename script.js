@@ -9,15 +9,6 @@ window.onload = function() {
     // this is the movement tracker
     // const moveDisplay = document.getElementById("movement")
 
-    // // we're setting up height and width variables BASED ON computed style
-    // // that means we're using setAttribute in conjunction with getComputedStyle
-    // game.setAttribute('width', getComputedStyle(game)['width'])
-    // game.setAttribute('height', getComputedStyle(game)['height'])
-    // // check out the varying attributes width and height!
-    // console.log('current game width', game.width)
-    // console.log('current game height', game.height)
-    
-    // const start = document.querySelector("start")
 
     // set canvas dimensions to window height and width
     const W = canvas.width
@@ -234,7 +225,7 @@ const randomAsteroid = (max) => {
 
 // console.log('this is rando asteroid x', randomAsteroid(game.width))
 
-let player = new PlayerShip((game.width / 2), 600, '#71FF69', 25, 25)
+let player = new PlayerShip(700, 600, '#71FF69', 25, 25)
 console.log(game.height)
 /// constructor(x, y, color, width, height)///
 
@@ -296,8 +287,6 @@ const detectHit = (thing) => {
 }
 
 
-let timeRemaining = 100
-
 // we're going to set up our game loop, to be used in our timing function
 // set up gameLoop function, declaring what happens when our game is running
 const gameLoop = () => {
@@ -333,17 +322,6 @@ const gameLoop = () => {
     player.movePlayer()
 }
 
-/// trying to add a timer ///
-
-// for(let i = 0; i < 100; i++) {
-//     console.log(i)
-//     if(i === timeRemaining) {
-//         stopGameLoop()
-//         document.querySelector('#btmRight > h2').innerText = 'You Lose!'
-//     }
-// }
-
-
 
 // /using a different event handler for smooth movement
 // we have two events now that we need to determine, we also will need to call player.move in the gameloop
@@ -359,16 +337,7 @@ document.addEventListener('keyup', (e) => {
         player.unsetDirection(e.key)
     }
 })
-// add event listener for player movement
-// document.addEventListener('keydown', movementHandler)
-// the timing function will determine how and when our game animates
-// let gameInterval = setInterval(gameLoop, 60)
-// function start() {
-    //     gameInterval = setInterval(gameLoop, 60)
-    //     console.log('checking to see if game starts')
-    // }
-    // let startGame = document.querySelector('#status')
-    // startGame.addEventListener('click', start)
+
     
     // we also need to declare a function that will stop our animation loop
     let stopGameLoop = () => {clearInterval(gameInterval)}
@@ -376,26 +345,40 @@ document.addEventListener('keyup', (e) => {
 
     // function stopGameLoop()
     // {
-    //     let startDiv = document.getElementById("start");
-    //     // let canvas = document.getElementById("canvas");
-    //     let gameOver = document.getElementById("game-over");
-    //     startDiv.style.display = "block";
-    //     // canvas.style.display = "none";
-    //     // gameOver.style.display = "block";
+    //     let startDiv = document.getElementById("start")
+    //     // let canvas = document.getElementById("canvas")
+    //     let gameOver = document.getElementById("game-over")
+    //     startDiv.style.display = "block"
+    //     // canvas.style.display = "none"
+    //     // gameOver.style.display = "block"
     //     clearInterval(gameInterval)
-    //     // start();
+    //     // start()
+    // }
+
+    // function gameOver() {
+    //     let startDiv = document.getElementById("start")
+    //     let canvas = document.getElementById("canvas")
+    //     let gameOver = document.getElementById("game-over")
+    //     startDiv.style.display = "none"
+    //     gameCanvas.style.display = "none"
+    //     gameOver.style.display = "block"
+    
+    //     player.reset()
+    //     asteroidArr.reset()
+    //     ufoArr.reset()
+    
+    //     clearInterval(loop)
     // }
 
 
 
-
 function startGame() {
-    let startDiv = document.getElementById("start");
-    // let canvas = document.getElementById("canvas");
-    let gameOver = document.getElementById("game-over");
-    startDiv.style.display = "none";
-    canvas.style.display = "block";
-    gameOver.style.display = "none";
+    let startDiv = document.getElementById("start")
+    // let canvas = document.getElementById("canvas")
+    let gameOver = document.getElementById("game-over")
+    startDiv.style.display = "none"
+    canvas.style.display = "block"
+    gameOver.style.display = "none"
     gameInterval = setInterval(gameLoop, 60)
-    // start();
+
 }
