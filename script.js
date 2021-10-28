@@ -4,6 +4,7 @@ window.onload = function() {
     // document.body.addEventListener("keyup", HandleKeyUp)
     const canvas = document.getElementById("canvas")
     canvas.height = 600
+    canvas.width = 1400
     const ctx = canvas.getContext("2d")
     // this is the movement tracker
     // const moveDisplay = document.getElementById("movement")
@@ -16,7 +17,7 @@ window.onload = function() {
     // console.log('current game width', game.width)
     // console.log('current game height', game.height)
     
-    
+    // const start = document.querySelector("start")
 
     // set canvas dimensions to window height and width
     const W = canvas.width
@@ -72,9 +73,9 @@ window.onload = function() {
     //     }
     // }
 
-    // setInterval(drawFlakes, 25)
+    // setInterval(drawFlakes, 50)
 
-
+            //// Couldn't get this to sit under my canvas /////
 /////////////////////////////END COOL BACKGROUND/////////////////////////////////////
 }
 
@@ -100,6 +101,11 @@ game.setAttribute('height', getComputedStyle(game)['height'])
 // now we need to get the game's context so we can add to it, draw on it, create animations etc
 // we do this with the built in canvas method, getContext
 const ctx = game.getContext('2d')
+
+
+
+let gameInterval
+
 
 // we're going to follow some sorta basic Object Oriented Programming 'rules' to build an interactive game
 
@@ -207,8 +213,8 @@ class PlayerShip {
 		ctx.fillStyle = this.color
 		ctx.fillRect(this.x, this.y, this.width, this.height, this.speed)
         // Shadow
-        ctx.shadowColor = 'green';
-        ctx.shadowBlur = 15;
+        ctx.shadowColor = '#71FF69';
+        ctx.shadowBlur = 20;
 	}
 }
 
@@ -228,7 +234,7 @@ const randomAsteroid = (max) => {
 
 // console.log('this is rando asteroid x', randomAsteroid(game.width))
 
-let player = new PlayerShip((game.width / 2), 600, 'yellow', 25, 25)
+let player = new PlayerShip((game.width / 2), 600, '#71FF69', 25, 25)
 console.log(game.height)
 /// constructor(x, y, color, width, height)///
 
@@ -237,7 +243,7 @@ let ufoArr = []
 
 setInterval(()=> {
     /// create a new ufo///
-    let ufo = new Enemy2(randomAsteroid(game.width), 0, 'red', 32, 48)
+    let ufo = new Enemy2(randomAsteroid(game.width), 0, 'black', 32, 48)
     // console.log('this is the player', player)
     /// this can be done with the line ufoArr.push(ufo)
     ufoArr.push(ufo)
@@ -246,18 +252,22 @@ setInterval(()=> {
 })
 
 
-
-
+let timer = document.getElementById("timer")
 
 setInterval(() => {
     /// create a new asteroid///
-    let asteroid = new Enemy(randomAsteroid(game.width), 0, 'blue', 27, 27)
+    let asteroid = new Enemy(randomAsteroid(game.width), 0, '#1F51FF', 27, 27)
     /// this can be done with the line asteroidArr.push(asteroid)
     asteroidArr.push(asteroid)
     /// inside my game loop I will need to loop over asteroidArr, and call asteroid[i].render() if/when you detect a hit with the asteroid, you'll need to splice it from the array so it no longer shows up while rendering ///
     
   }, 2000);
-  setTimeout(() => { clearInterval(asteroidArr); alert('Game Over!'); }, 120000)
+  
+
+
+/// get rid of my alert. Change 'Game Over!' to a function saying render this game over with a div element onto center on screen. I will need to use Z-index ///
+
+
 
 // make collision detection
 // writing logic that determines if any part of our player square touches any part of our asteroid
@@ -279,11 +289,14 @@ const detectHit = (thing) => {
         // kill asteroid
         thing.alive = false
         // end the game
-        document.querySelector('#btmRight > h2').innerText = 'NICE!'
+        // document.querySelector('#btmRight > h2').innerText = 'NICE!'
         // this is not quite where we want to stop our loop
         // stopGameLoop()
     }
 }
+
+
+let timeRemaining = 100
 
 // we're going to set up our game loop, to be used in our timing function
 // set up gameLoop function, declaring what happens when our game is running
@@ -292,9 +305,9 @@ const gameLoop = () => {
     ctx.clearRect(0, 0, game.width, game.height)
     // console.log(asteroidArr)
     /// The CanvasRenderingContext2D.clearRect() method of the Canvas 2D API erases the pixels in a rectangular area by setting them to transparent black. Note: Be aware that clearRect() may cause unintended side effects if you're not using paths properly. Make sure to call beginPath() before starting to draw new items after calling clearRect().///
-  
+ 
     // display relevant game state(player movement) in our movement display
-    moveDisplay.innerText = `X: ${player.x}\nY: ${player.y}`
+    // moveDisplay.innerText = `X: ${player.x}\nY: ${player.y}`
     player.render()
     // check if the asteroid is alive, if so, render the asteroid
     for(let i = 0; i < asteroidArr.length; i++) {
@@ -310,6 +323,7 @@ const gameLoop = () => {
             ufoArr[i].y++
             detectHit(ufoArr[i])
         } else {
+            timer.innerText = 'Game Over!'
             stopGameLoop()
             document.querySelector('#btmRight > h2').innerText = 'You Lose!'
         }
@@ -319,8 +333,17 @@ const gameLoop = () => {
     player.movePlayer()
 }
 
-// we also need to declare a function that will stop our animation loop
-let stopGameLoop = () => {clearInterval(gameInterval)}
+/// trying to add a timer ///
+
+// for(let i = 0; i < 100; i++) {
+//     console.log(i)
+//     if(i === timeRemaining) {
+//         stopGameLoop()
+//         document.querySelector('#btmRight > h2').innerText = 'You Lose!'
+//     }
+// }
+
+
 
 // /using a different event handler for smooth movement
 // we have two events now that we need to determine, we also will need to call player.move in the gameloop
@@ -339,5 +362,40 @@ document.addEventListener('keyup', (e) => {
 // add event listener for player movement
 // document.addEventListener('keydown', movementHandler)
 // the timing function will determine how and when our game animates
-let gameInterval = setInterval(gameLoop, 60)
+// let gameInterval = setInterval(gameLoop, 60)
+// function start() {
+    //     gameInterval = setInterval(gameLoop, 60)
+    //     console.log('checking to see if game starts')
+    // }
+    // let startGame = document.querySelector('#status')
+    // startGame.addEventListener('click', start)
+    
+    // we also need to declare a function that will stop our animation loop
+    let stopGameLoop = () => {clearInterval(gameInterval)}
 
+
+    // function stopGameLoop()
+    // {
+    //     let startDiv = document.getElementById("start");
+    //     // let canvas = document.getElementById("canvas");
+    //     let gameOver = document.getElementById("game-over");
+    //     startDiv.style.display = "block";
+    //     // canvas.style.display = "none";
+    //     // gameOver.style.display = "block";
+    //     clearInterval(gameInterval)
+    //     // start();
+    // }
+
+
+
+
+function startGame() {
+    let startDiv = document.getElementById("start");
+    // let canvas = document.getElementById("canvas");
+    let gameOver = document.getElementById("game-over");
+    startDiv.style.display = "none";
+    canvas.style.display = "block";
+    gameOver.style.display = "none";
+    gameInterval = setInterval(gameLoop, 60)
+    // start();
+}

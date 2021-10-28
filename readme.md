@@ -16,16 +16,13 @@ HTML, CSS, Javascript
 * MVP Goals
     * Put canvas on screen
     * Put spaceship (Player) on canvas
-    * Get the spaceship (Player) to moves around
-    * Get the spaceship to shoot
+    * Get the spaceship (Player) to move around
     * Put asteroid on canvas
     * Get the asteroid to move from one direction of the screen to the other side
-    * Make bullets have an effect
     * Put UFO's on the canvas
     * Get the UFO's to move from one direction of the screen to the other side
-    * Make bullets affect asteroids and UFO's
-    * Bad guys (asteroids and UFO's) make me lose a life
-    * Shooting bad guys add to the score       
+    * Bad guys (UFO's) make me lose a life/lose game
+    * Crashing into asteroids to add to the score       
 
 * Functional game breakdown
     * Start, Restart, and Instructions buttons functionally working
@@ -36,9 +33,9 @@ HTML, CSS, Javascript
         * They decrease by one every time you die 
         * If you die with no lives left the game ends
     * Objects 
-        * Asteroids and UFO’s are moving across in a straight line
+        * Asteroids and UFO’s are moving across the screen in a straight line
         * Player movement is with arrow keys/w,a,s,d and space bar is used to shoot
-    * You win by achieving a certain score (not yet set)
+    * You win by lasting the entire time of the game. You accumalete points during the game
     * When you lose
         * Game Over flashes on the screen
         * You must hit restart to continue
@@ -55,6 +52,9 @@ HTML, CSS, Javascript
 * Add another level
 * Having bad guys coming in all different directions
 * Player is moving and shooting in all directions
+* Get the spaceship to shoot
+* Make bullets have an effect
+* Make bullets affect asteroids and UFO's
 
 ## Any Potential Roadblocks
 * Logging score

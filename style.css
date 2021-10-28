@@ -3,7 +3,7 @@ html, body {
   padding: 0;
 }
 body {
-  background: rgb(140, 183, 181);
+  background: black;
   padding-top: 1em;
   text-align: center;
   background-size: cover;
@@ -11,19 +11,20 @@ body {
 }
 
 h1, h2 {
-  font-family: 'Press Start 2P' monospace;
-  color: rgb(50, 60, 62)
+  font-size: 30px;
+  font-family: 'Press Start 2P';
+  color: rgb(113, 255, 105);
 }
 
 #container {
   /* max-width changes the size of the gaming box */
   max-width: 55em; 
   margin: 0 auto;
-  padding: 1em;
+  padding: 2em;
   display: flow-root;
   grid-gap: 1em;
-  background-color: rgb(80, 168, 169);
-  /* background-color: black; */
+  /* background-color: rgb(80, 168, 169); */
+  background-color: black;
 }
 
 #canvas {
@@ -32,3 +33,41 @@ h1, h2 {
   height: 100%;
   /* margin-left: 40px; */
 }
+
+#btmLeft {
+  font-size: 30px;
+  font-family: 'Press Start 2P';
+  color: rgb(113, 255, 105);
+}
+
+
+
+#start, #game-over {
+  font-family:'Press Start 2P';
+  color: rgb(113, 255, 105);
+  padding: 20px;
+  position: fixed;
+  top:50%;
+  left:50%;
+  margin-top: -100px;
+  margin-left: -120px;
+  height:200px;
+  width:250px;
+  text-align: center;
+}
+
+#start a, #game-over a {
+  border: 3px solid #ffffff;
+  color: rgb(113, 255, 105);
+  text-decoration: none;
+  padding: 10px;
+  border-radius: 15px;
+  cursor: pointer;
+  display: block;
+  width: 200px;
+  text-align: center;
+  font-size:2em;
+  display: inline-block;
+}
+
+#start a:hover, #game-over a:hover { background-color: #ffffff; color: rgb(113, 255, 105); }
