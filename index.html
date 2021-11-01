@@ -13,11 +13,22 @@
 <body>
   <h1>Asteroids</h1>
   <div id="container">
+    <div id="instruct">
+      <form>
+        <fieldset>
+          <legend id="instructions">Instructions</legend>
+            <div>
+              <label id="howToPlay">Smash into the blue Asteroids for points. Try to get as many points as you can. Avoid hitting the black and green UFO's. If you hit them you will lose the game. <b id="bold">Keys: w-UP, a-LEFT, s-DOWN, d-RIGHT.</b> You can also move diagonally by pressing the correct two keys together. Example: w+a will move upwards to the left. Hold keys down to move rapidly.</label>
+            </div>
+        </fieldset>
+      </form>
+    </div>
     <h2 id="timer"></h2>
     <div id="start">
       <a href="#" onclick="startGame()">Start Game</a>
     </div>
     <div id="game-over" style="display:none">
+      <a href="#" onclick="gameOver()">Restart Game</a>
       <!-- <h1>Game Over</h1> -->
     </div>
     <aside id="topLeft"><h2></h2></aside>

@@ -43,7 +43,7 @@ h1, h2 {
 
 
 
-#start, #game-over {
+#game-over {
   font-family:'Press Start 2P';
   color: rgb(113, 255, 105);
   padding: 20px;
@@ -72,3 +72,37 @@ h1, h2 {
 }
 
 #start a:hover, #game-over a:hover { background-color: #ffffff; color: rgb(113, 255, 105); }
+
+#instructions {
+  color: whitesmoke;
+  font-family: 'Press Start 2P';
+  font-size: 12px;
+}
+
+#howToPlay {
+  color: whitesmoke;
+  font-family: 'Press Start 2P';
+  font-size: 12px;
+}
+
+#start {
+  font-family:'Press Start 2P';
+  color: rgb(113, 255, 105);
+  /* padding-top: 100px; */
+  position: absolute;
+  top:70%;
+  left:50%;
+  margin-top: -100px;
+  margin-left: -150px;
+  height:200px;
+  width:250px;
+  text-align: center;
+}
+
+#bold {
+  color: rgb(113, 255, 105);
+}
+
+#instruct {
+  margin-left: 10px;
+}
