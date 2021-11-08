@@ -1,5 +1,5 @@
-window.onload = function() {
-    
+window.onload = function () {
+
 
     const canvas = document.getElementById("canvas")
     canvas.height = 600
@@ -12,9 +12,9 @@ window.onload = function() {
 
     // generate the flakes and apply attributes
     const mf = 100 // max number of flakees
-    const flakes =[]
+    const flakes = []
 
-/////////////////////////////COOL BACKGROUND/////////////////////////////////////////
+    /////////////////////////////COOL BACKGROUND/////////////////////////////////////////
     // loop through the empty flakes and apply attributes
     // for(let i = 0; i < mf; i++) {
     //     flakes.push({
@@ -62,8 +62,8 @@ window.onload = function() {
 
     // setInterval(drawFlakes, 50)
 
-            //// Couldn't get this to sit under my canvas /////
-/////////////////////////////END COOL BACKGROUND/////////////////////////////////////
+    //// Couldn't get this to sit under my canvas /////
+    /////////////////////////////END COOL BACKGROUND/////////////////////////////////////
 }
 
 
@@ -137,24 +137,24 @@ class Enemy2 {
 }
 
 class PlayerShip {
-	constructor(x, y, color, width, height) {
-		this.x = x
-		this.y = y
-		this.color = color
-		this.width = width
-		this.height = height
+    constructor(x, y, color, width, height) {
+        this.x = x
+        this.y = y
+        this.color = color
+        this.width = width
+        this.height = height
         // is my ship currently moving forward
         this.movingForward = false
-		this.alive = true
+        this.alive = true
         this.direction = {
             up: false,
             down: false,
             right: false,
             left: false
         }
-    
-	}
-    
+
+    }
+
     setDirection(key) {
         // console.log('the key pressed', key)
         // pressing key moves the character in direction
@@ -173,35 +173,35 @@ class PlayerShip {
         if (key.toLowerCase() == 's') this.direction.down = false
         if (key.toLowerCase() == 'd') this.direction.right = false
     }
-    movePlayer () {
-            // move up //
+    movePlayer() {
+        // move up //
         if (this.direction.up) this.y -= 10
-            if (this.y <= 0) {
-                this.y = 0
-            }
-            // move left //
+        if (this.y <= 0) {
+            this.y = 0
+        }
+        // move left //
         if (this.direction.left) this.x -= 10
-            if (this.x <= 0) {
-                this.x = 0
-            }
-            // move down //
+        if (this.x <= 0) {
+            this.x = 0
+        }
+        // move down //
         if (this.direction.down) this.y += 10
-            if (this.y + this.height >= game.height) {
-                this.y = game.height - this.height
-            }
-            // move right //
+        if (this.y + this.height >= game.height) {
+            this.y = game.height - this.height
+        }
+        // move right //
         if (this.direction.right) this.x += 10
-            if (this.x + this.width >= game.width) {
-                this.x = game.width - this.width
-            }
+        if (this.x + this.width >= game.width) {
+            this.x = game.width - this.width
+        }
     }
-	render = function () {
-		ctx.fillStyle = this.color
-		ctx.fillRect(this.x, this.y, this.width, this.height, this.speed)
+    render = function () {
+        ctx.fillStyle = this.color
+        ctx.fillRect(this.x, this.y, this.width, this.height, this.speed)
         // Shadow effect//
         ctx.shadowColor = '#71FF69';
         ctx.shadowBlur = 20;
-	}
+    }
 }
 
 // This function will keep track of the score //
@@ -221,14 +221,14 @@ const randomAsteroid = (max) => {
 
 // console.log('this is rando asteroid x', randomAsteroid(game.width))
 
-let player = new PlayerShip(700, 600, '#71FF69', 25, 25)
+let player;
 console.log(game.height)
 /// constructor(x, y, color, width, height)///
 
 let asteroidArr = []
 let ufoArr = []
 
-setInterval(()=> {
+setInterval(() => {
     /// create a new ufo///
     let ufo = new Enemy2(randomAsteroid(game.width), 0, 'black', 32, 48)
     // console.log('this is the player', player)
@@ -247,9 +247,9 @@ setInterval(() => {
     /// this can be done with the line asteroidArr.push(asteroid)
     asteroidArr.push(asteroid)
     /// inside my game loop I will need to loop over asteroidArr, and call asteroid[i].render() if/when you detect a hit with the asteroid, I'll need to splice it from the array so it no longer shows up while rendering ///
-    
-  }, 2000);
-  
+
+}, 2000);
+
 
 // make collision detection
 // writing logic that determines if any part of my player square touches any part of my asteroid
@@ -260,7 +260,7 @@ const detectHit = (thing) => {
     // if the player's x + width or y + height hits the asteroid's x+width or y+height, kill asteroid
     if (
         /// x-axis = horizontal(width) and y-axis = vertical(height) ...if player x axis < thing(asteroids/ufo) x axis + thing width && player x axis + player.width > thing x axis && player y axis < thing y axis + thing.height && player y axis + player.height > thing.y THING.ALIVE is false and the asteroid/ufo has been killed///
-        
+
         player.x < thing.x + thing.width &&
         player.x + player.width > thing.x &&
         player.y < thing.y + thing.height &&
@@ -282,13 +282,13 @@ const gameLoop = () => {
     ctx.clearRect(0, 0, game.width, game.height)
     // console.log(asteroidArr)
     /// The CanvasRenderingContext2D.clearRect() method of the Canvas 2D API erases the pixels in a rectangular area by setting them to transparent black. Note: Be aware that clearRect() may cause unintended side effects if you're not using paths properly. Make sure to call beginPath() before starting to draw new items after calling clearRect().///
- 
+
     // display relevant game state(player movement) in my movement display
     // moveDisplay.innerText = `X: ${player.x}\nY: ${player.y}`
     player.render()
     // check if the asteroid is alive, if so, render the asteroid
-    for(let i = 0; i < asteroidArr.length; i++) {
-        
+    for (let i = 0; i < asteroidArr.length; i++) {
+
         if (asteroidArr[i].alive) {
             asteroidArr[i].render()
             asteroidArr[i].y++
@@ -300,6 +300,8 @@ const gameLoop = () => {
             ufoArr[i].y++
             detectHit(ufoArr[i])
         } else {
+            asteroidArr = []
+            // this allows the asteroids to stop loading and gives the ability to start game
             timer.innerText = 'Game Over!'
             stopGameLoop()
             document.querySelector('#btmRight > h2').innerText = 'You Lose!'
@@ -320,47 +322,54 @@ document.addEventListener('keydown', (e) => {
 // this will unset direction
 document.addEventListener('keyup', (e) => {
     // console.log('keyup')
-    if(['w', 'a', 's', 'd'].includes(e.key)) {
+    if (['w', 'a', 's', 'd'].includes(e.key)) {
         // console.log('unsetDirection')
         player.unsetDirection(e.key)
     }
 })
 
-    
-    // I also need to declare a function that will stop my animation loop
-    let stopGameLoop = () => {clearInterval(gameInterval)}
+
+// I also need to declare a function that will stop my animation loop
+let stopGameLoop = () => {
+    console.log('stopGameLoop')
+    clearInterval(gameInterval)
+    let startDiv = document.getElementById("start")
+    startDiv.style.display = "block"
+}
 
 
-    // function stopGameLoop()
-    // {
-    //     let startDiv = document.getElementById("start")
-    //     // let canvas = document.getElementById("canvas")
-    //     let gameOver = document.getElementById("game-over")
-    //     startDiv.style.display = "block"
-    //     // canvas.style.display = "none"
-    //     // gameOver.style.display = "block"
-    //     clearInterval(gameInterval)
-    //     // start()
-    // }
+// function stopGameLoop()
+// {
+//     let startDiv = document.getElementById("start")
+//     // let canvas = document.getElementById("canvas")
+//     let gameOver = document.getElementById("game-over")
+//     startDiv.style.display = "block"
+//     // canvas.style.display = "none"
+//     // gameOver.style.display = "block"
+//     clearInterval(gameInterval)
+//     // start()
+// }
 
-    // function gameOver() {
-    //     let startDiv = document.getElementById("start")
-    //     let canvas = document.getElementById("canvas")
-    //     let gameOver = document.getElementById("game-over")
-    //     startDiv.style.display = "none"
-    //     gameCanvas.style.display = "none"
-    //     gameOver.style.display = "block"
-    
-    //     player.reset()
-    //     asteroidArr.reset()
-    //     ufoArr.reset()
-    
-    //     clearInterval(loop)
-    // }
+// function gameOver() {
+//     let startDiv = document.getElementById("start")
+//     let canvas = document.getElementById("canvas")
+//     let gameOver = document.getElementById("game-over")
+//     startDiv.style.display = "none"
+//     gameCanvas.style.display = "none"
+//     gameOver.style.display = "block"
+
+//     player.reset()
+//     asteroidArr.reset()
+//     ufoArr.reset()
+
+//     clearInterval(loop)
+// }
 
 
 
 function startGame() {
+    player = new PlayerShip(700, 600, '#71FF69', 25, 25)
+    console.log('start Game')
     let startDiv = document.getElementById("start")
     // let canvas = document.getElementById("canvas")
     let gameOver = document.getElementById("game-over")
