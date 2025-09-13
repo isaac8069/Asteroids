@@ -1,383 +1,420 @@
-window.onload = function () {
+/* ----------------------------
+   Asteroids — vanilla JS build
+   Works with your provided HTML
+   ---------------------------- */
 
+// -------- Canvas & DOM ----------
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
 
-    const canvas = document.getElementById("canvas")
-    canvas.height = 600
-    canvas.width = 1400
-    const ctx = canvas.getContext("2d")
+const $scoreEl = document.querySelector('#btmLeft h2');
+const $statusEl = document.getElementById('status');
+const $movementEl = document.getElementById('movement');
+const $timerEl = document.getElementById('timer');
 
-    // set canvas dimensions to window height and width
-    const W = canvas.width
-    const H = canvas.height
+const $start = document.getElementById('start');
+const $gameOver = document.getElementById('game-over');
 
-    // generate the flakes and apply attributes
-    const mf = 100 // max number of flakees
-    const flakes = []
+function resizeCanvas() {
+  // Fill the main area nicely
+  const dpr = window.devicePixelRatio || 1;
+  const w = Math.max(640, Math.min(window.innerWidth - 40, 1200));
+  const h = Math.max(400, Math.min(window.innerHeight - 200, 800));
+  canvas.style.width = `${w}px`;
+  canvas.style.height = `${h}px`;
+  canvas.width = Math.floor(w * dpr);
+  canvas.height = Math.floor(h * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
 
-    /////////////////////////////COOL BACKGROUND/////////////////////////////////////////
-    // loop through the empty flakes and apply attributes
-    // for(let i = 0; i < mf; i++) {
-    //     flakes.push({
-    //         x: Math.random()*W,
-    //         y: Math.random()*H,
-    //         r: Math.random()*5+2, // min of 2px and max of 7px
-    //         d: Math.random() + 1 // density of the flake
-    //     })
-    // }
+// -------- Game State ------------
+const STATE = {
+  running: false,
+  over: false,
+  startedAt: 0,
+  // entities
+  player: null,
+  asteroids: [],
+  ufos: [],
+  // scoring
+  score: 0,
+  // spawn timers
+  nextAsteroidIn: 0,
+  nextUfoIn: 0,
+};
 
-    // // draw flakes onto canvas
-    // function drawFlakes() {
-    //     ctx.clearRect(0, 0, W, H)
-    //     ctx.fillStyle = "white"
-    //     ctx.beginPath()
-    //     for(let i = 0; i < mf; i++) {
-    //         const f = flakes[i]
-    //         ctx.moveTo(f.x, f.y)
-    //         ctx.arc(f.x, f.y, f.r, 0, Math.PI*2, true)
-    //     }
-    //     ctx.fill();
-    //     moveFlakes()
-    // }
+const CONFIG = {
+  playerSpeed: 4,          // pixels per frame @ ~60fps
+  playerRadius: 14,
+  asteroidRadius: [8, 18], // min,max
+  ufoRadius: [12, 18],
+  asteroidEveryMs: [600, 1200], // random spawn window
+  ufoEveryMs: [1200, 2200],
+  asteroidValue: 10,
+  friction: 0.9,           // optional inertia (set to 1 for no inertia)
+  wrap: true,              // wrap screen edges (classic feel)
+  safeSpawnRadius: 120,    // keep spawns away from player
+};
 
-    // // animate the flakes
-    // let angle = 0
+// -------- Utilities -------------
+const rand = (min, max) => Math.random() * (max - min) + min;
+const randi = (min, max) => Math.floor(rand(min, max));
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 
-    // function moveFlakes(){
-    //     angle += 0.01
-    //     for(let i = 0; i < mf; i++) {
-
-    //         //store current flake
-    //         let f = flakes[i]
-
-    //         // update x and y coordinates of each flake
-    //         f.y += Math.pow(f.d, 2) + 1
-    //         f.x += Math.sin(angle) * 2
-
-    //         // if flake reaches the bottom, send a new one to the top
-    //         if(f.y > H) {
-    //             flakes[i] = {x: Math.random()*W, y: 0, r: f.r, d: f.d}
-    //         }
-    //     }
-    // }
-
-    // setInterval(drawFlakes, 50)
-
-    //// Couldn't get this to sit under my canvas /////
-    /////////////////////////////END COOL BACKGROUND/////////////////////////////////////
+function dist(ax, ay, bx, by) {
+  const dx = ax - bx;
+  const dy = ay - by;
+  return Math.hypot(dx, dy);
 }
 
-
-const game = document.getElementById('canvas')
-// The movement tracker
-const moveDisplay = document.getElementById('movement')
-
-// I am setting up height and width variables BASED ON computed style
-// that means I am using setAttribute in conjunction with getComputedStyle
-
-/// Sets the value of an attribute on the specified element. If the attribute already exists, the value is updated; otherwise a new attribute is added with the specified name and value. ///
-
-game.setAttribute('width', getComputedStyle(game)['width'])
-game.setAttribute('height', getComputedStyle(game)['height'])
-
-/// The Window.getComputedStyle() method returns an object containing the values of all CSS properties of an element, after applying active stylesheets and resolving any basic computation those values may contain. ///
-
-// check out the varying attributes width and height!
-// console.log('current game width', game.width)
-// console.log('current game height', game.height)
-
-// now I need to get the game's context so I can add to it, draw on it, create animations etc
-// I do this with the built in canvas method, getContext
-const ctx = game.getContext('2d')
-
-
-// The gameInterval variable will help start and stop the game
-let gameInterval
-
-
-/// Object-oriented programming (OOP) is a programming paradigm based on the concept of "objects", which can contain data and code: data in the form of fields (often known as attributes or properties), and code, in the form of procedures (often known as methods). ///
-
-// I'll create objects for my player and my asteroid
-// I'll give them their own 'draw' methods to place them on the canvas
-
-//  classes //
-class Enemy {
-    constructor(x, y, color, width, height) {
-        this.x = x
-        this.y = y
-        this.color = color
-        this.width = width
-        this.height = height
-        this.alive = true
-    }
-    render = function () {
-        ctx.fillStyle = this.color
-        ctx.fillRect(this.x, this.y, this.width, this.height)
-        // ctx.beginPath();
-        // ctx.arc(100, 75, 50, 0, 2 * Math.PI);
-        // ctx.stroke();
-    }
+function spawnAwayFrom(cx, cy, minDist) {
+  // Find a random point on canvas not too close to (cx,cy)
+  let x, y, tries = 0;
+  do {
+    x = rand(0, canvas.clientWidth);
+    y = rand(0, canvas.clientHeight);
+    tries++;
+  } while (dist(x, y, cx, cy) < minDist && tries < 100);
+  return { x, y };
 }
 
-class Enemy2 {
-    constructor(x, y, color, width, height) {
-        this.x = x
-        this.y = y
-        this.color = color
-        this.width = width
-        this.height = height
-        this.alive = true
-    }
-    render = function () {
-        ctx.fillStyle = this.color
-        ctx.fillRect(this.x, this.y, this.width, this.height)
-        // ctx.beginPath();
-        // ctx.arc(100, 75, 50, 0, 2 * Math.PI);
-        // ctx.stroke();
-    }
+// -------- Input (WASD + Arrows, diagonals, no scroll) -----
+const keysDown = new Set();
+
+function shouldPreventDefault(e) {
+  const el = e.target;
+  const typing = el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable;
+  if (typing) return false;
+  return e.code.startsWith('Arrow') || e.code === 'Space';
 }
 
-class PlayerShip {
-    constructor(x, y, color, width, height) {
-        this.x = x
-        this.y = y
-        this.color = color
-        this.width = width
-        this.height = height
-        // is my ship currently moving forward
-        this.movingForward = false
-        this.alive = true
-        this.direction = {
-            up: false,
-            down: false,
-            right: false,
-            left: false
-        }
+window.addEventListener('keydown', (e) => {
+  if (shouldPreventDefault(e)) e.preventDefault();
+  keysDown.add(e.code);
+  updateMovementFromKeys();
+});
 
-    }
+window.addEventListener('keyup', (e) => {
+  if (shouldPreventDefault(e)) e.preventDefault();
+  keysDown.delete(e.code);
+  updateMovementFromKeys();
+});
 
-    setDirection(key) {
-        // console.log('the key pressed', key)
-        // pressing key moves the character in direction
-        if (key.toLowerCase() == 'w') this.direction.up = true
-        if (key.toLowerCase() == 'a') this.direction.left = true
-        if (key.toLowerCase() == 's') this.direction.down = true
-        if (key.toLowerCase() == 'd') this.direction.right = true
-    }
+window.addEventListener('blur', () => {
+  keysDown.clear();
+  updateMovementFromKeys();
+});
 
-    // I also need to consider keyup events and 'unset' that direction
-    /// The keyup event is sent to an element when the user releases a key on the keyboard. It can be attached to any element, but the event is only sent to the element that has the focus. Focusable elements can vary between browsers, but form elements can always get focus so are reasonable candidates for this event type.///
+function computeMoveVector() {
+  const left  = keysDown.has('KeyA') || keysDown.has('ArrowLeft');
+  const right = keysDown.has('KeyD') || keysDown.has('ArrowRight');
+  const up    = keysDown.has('KeyW') || keysDown.has('ArrowUp');
+  const down  = keysDown.has('KeyS') || keysDown.has('ArrowDown');
 
-    unsetDirection(key) {
-        if (key.toLowerCase() == 'w') this.direction.up = false
-        if (key.toLowerCase() == 'a') this.direction.left = false
-        if (key.toLowerCase() == 's') this.direction.down = false
-        if (key.toLowerCase() == 'd') this.direction.right = false
-    }
-    movePlayer() {
-        // move up //
-        if (this.direction.up) this.y -= 10
-        if (this.y <= 0) {
-            this.y = 0
-        }
-        // move left //
-        if (this.direction.left) this.x -= 10
-        if (this.x <= 0) {
-            this.x = 0
-        }
-        // move down //
-        if (this.direction.down) this.y += 10
-        if (this.y + this.height >= game.height) {
-            this.y = game.height - this.height
-        }
-        // move right //
-        if (this.direction.right) this.x += 10
-        if (this.x + this.width >= game.width) {
-            this.x = game.width - this.width
-        }
-    }
-    render = function () {
-        ctx.fillStyle = this.color
-        ctx.fillRect(this.x, this.y, this.width, this.height, this.speed)
-        // Shadow effect//
-        ctx.shadowColor = '#71FF69';
-        ctx.shadowBlur = 20;
-    }
+  let x = (right ? 1 : 0) + (left ? -1 : 0);
+  let y = (down ? 1 : 0)  + (up ? -1 : 0);
+
+  if (x !== 0 && y !== 0) {
+    const inv = 1 / Math.sqrt(2);
+    x *= inv; y *= inv;
+  }
+  return { x, y };
 }
 
-// This function will keep track of the score //
-let points = 0
-let score = document.getElementById("btmLeft")
-score.innerText = `Score: ${points}`
+function updateMovementFromKeys() {
+  if (!STATE.player) return;
+  const mv = computeMoveVector();
+  STATE.player.vx = mv.x * CONFIG.playerSpeed;
+  STATE.player.vy = mv.y * CONFIG.playerSpeed;
 
-function updatePoints() {
-    points += 10
-    score.innerText = `Score: ${points}`
-    console.log(points)
+  // UI direction text
+  const dir =
+    mv.x === 0 && mv.y === 0 ? 'Idle' :
+    `${mv.y < 0 ? 'Up' : mv.y > 0 ? 'Down' : ''}${(mv.x !== 0 && mv.y !== 0) ? '-' : ''}${mv.x < 0 ? 'Left' : mv.x > 0 ? 'Right' : ''}`;
+  if ($movementEl) $movementEl.textContent = `Direction: ${dir}`;
 }
 
-const randomAsteroid = (max) => {
-    return Math.floor(Math.random() * max)
+// -------- Entities ---------------
+function makePlayer() {
+  return {
+    x: canvas.clientWidth / 2,
+    y: canvas.clientHeight / 2,
+    r: CONFIG.playerRadius,
+    vx: 0,
+    vy: 0,
+    color: '#fff',
+  };
 }
 
-// console.log('this is rando asteroid x', randomAsteroid(game.width))
+function makeAsteroid() {
+  const player = STATE.player;
+  const spot = spawnAwayFrom(player.x, player.y, CONFIG.safeSpawnRadius);
+  return {
+    type: 'asteroid',
+    x: spot.x,
+    y: spot.y,
+    r: rand(CONFIG.asteroidRadius[0], CONFIG.asteroidRadius[1]),
+    color: '#1e90ff', // blue
+    vx: rand(-0.5, 0.5),
+    vy: rand(-0.5, 0.5),
+  };
+}
 
-let player;
-console.log(game.height)
-/// constructor(x, y, color, width, height)///
+function makeUfo(color = 'black') {
+  const player = STATE.player;
+  const spot = spawnAwayFrom(player.x, player.y, CONFIG.safeSpawnRadius + 40);
+  return {
+    type: 'ufo',
+    x: spot.x,
+    y: spot.y,
+    r: rand(CONFIG.ufoRadius[0], CONFIG.ufoRadius[1]),
+    color, // 'black' or 'green'
+    vx: rand(-1.2, 1.2),
+    vy: rand(-1.2, 1.2),
+  };
+}
 
-let asteroidArr = []
-let ufoArr = []
+// -------- Spawning ----------------
+function scheduleNextAsteroid() {
+  STATE.nextAsteroidIn = performance.now() + randi(CONFIG.asteroidEveryMs[0], CONFIG.asteroidEveryMs[1]);
+}
+function scheduleNextUfo() {
+  STATE.nextUfoIn = performance.now() + randi(CONFIG.ufoEveryMs[0], CONFIG.ufoEveryMs[1]);
+}
 
-setInterval(() => {
-    /// create a new ufo///
-    let ufo = new Enemy2(randomAsteroid(game.width), 0, 'black', 32, 48)
-    // console.log('this is the player', player)
-    /// this can be done with the line ufoArr.push(ufo)
-    ufoArr.push(ufo)
-    /// inside my game loop I will need to loop over ufoArr, and call ufo[i].render() if/when I detect a hit with the ufo, I'll need to splice it from the array so it no longer shows up while rendering ///
+// -------- Game Loop ---------------
+let rafId = null;
+let lastTs = 0;
 
-})
+function update(dt) {
+  const p = STATE.player;
+  if (!p) return;
 
+  // Player motion (optional friction for smoother feel)
+  p.x += p.vx * dt;
+  p.y += p.vy * dt;
+  p.vx *= CONFIG.friction;
+  p.vy *= CONFIG.friction;
 
-let timer = document.getElementById("timer")
+  // Wrap/clamp
+  if (CONFIG.wrap) {
+    if (p.x < -p.r) p.x = canvas.clientWidth + p.r;
+    if (p.x > canvas.clientWidth + p.r) p.x = -p.r;
+    if (p.y < -p.r) p.y = canvas.clientHeight + p.r;
+    if (p.y > canvas.clientHeight + p.r) p.y = -p.r;
+  } else {
+    p.x = clamp(p.x, p.r, canvas.clientWidth - p.r);
+    p.y = clamp(p.y, p.r, canvas.clientHeight - p.r);
+  }
 
-setInterval(() => {
-    /// create a new asteroid///
-    let asteroid = new Enemy(randomAsteroid(game.width), 0, '#1F51FF', 27, 27)
-    /// this can be done with the line asteroidArr.push(asteroid)
-    asteroidArr.push(asteroid)
-    /// inside my game loop I will need to loop over asteroidArr, and call asteroid[i].render() if/when you detect a hit with the asteroid, I'll need to splice it from the array so it no longer shows up while rendering ///
+  // Move asteroids
+  for (const a of STATE.asteroids) {
+    a.x += a.vx * dt;
+    a.y += a.vy * dt;
+    wrapEntity(a);
+  }
 
-}, 2000);
+  // Move ufos (bounce a little)
+  for (const u of STATE.ufos) {
+    u.x += u.vx * dt;
+    u.y += u.vy * dt;
 
+    if (u.x < u.r || u.x > canvas.clientWidth - u.r) u.vx *= -1;
+    if (u.y < u.r || u.y > canvas.clientHeight - u.r) u.vy *= -1;
+  }
 
-// make collision detection
-// writing logic that determines if any part of my player square touches any part of my asteroid
-
-// update detect hit, to take a variable(parameter) to use it on multiple things
-const thing = asteroidArr
-const detectHit = (thing) => {
-    // if the player's x + width or y + height hits the asteroid's x+width or y+height, kill asteroid
-    if (
-        /// x-axis = horizontal(width) and y-axis = vertical(height) ...if player x axis < thing(asteroids/ufo) x axis + thing width && player x axis + player.width > thing x axis && player y axis < thing y axis + thing.height && player y axis + player.height > thing.y THING.ALIVE is false and the asteroid/ufo has been killed///
-
-        player.x < thing.x + thing.width &&
-        player.x + player.width > thing.x &&
-        player.y < thing.y + thing.height &&
-        player.y + player.height > thing.y
-    ) {
-        updatePoints()
-
-        // kill asteroid
-        thing.alive = false
-        // end the game
+  // Collisions: player vs asteroids (collect)
+  for (let i = STATE.asteroids.length - 1; i >= 0; i--) {
+    const a = STATE.asteroids[i];
+    if (dist(p.x, p.y, a.x, a.y) <= p.r + a.r) {
+      STATE.asteroids.splice(i, 1);
+      STATE.score += CONFIG.asteroidValue;
+      updateScoreUI();
+      // feedback
+      pulseStatus(`+${CONFIG.asteroidValue} points!`);
     }
-}
+  }
 
-
-// I'm going to set up my game loop, to be used in my timing function
-// set up gameLoop function, declaring what happens when my game is running
-const gameLoop = () => {
-    // clear the canvas
-    ctx.clearRect(0, 0, game.width, game.height)
-    // console.log(asteroidArr)
-    /// The CanvasRenderingContext2D.clearRect() method of the Canvas 2D API erases the pixels in a rectangular area by setting them to transparent black. Note: Be aware that clearRect() may cause unintended side effects if you're not using paths properly. Make sure to call beginPath() before starting to draw new items after calling clearRect().///
-
-    // display relevant game state(player movement) in my movement display
-    // moveDisplay.innerText = `X: ${player.x}\nY: ${player.y}`
-    player.render()
-    // check if the asteroid is alive, if so, render the asteroid
-    for (let i = 0; i < asteroidArr.length; i++) {
-
-        if (asteroidArr[i].alive) {
-            asteroidArr[i].render()
-            asteroidArr[i].y++
-            // add in my detection to see if the hit has been made
-            detectHit(asteroidArr[i])
-        } else if (ufoArr[i].alive) {
-            document.querySelector('#btmRight > h2').innerText = 'Watch out for the UFOs!'
-            ufoArr[i].render()
-            ufoArr[i].y++
-            detectHit(ufoArr[i])
-        } else {
-            asteroidArr = []
-            // this allows the asteroids to stop loading and gives the ability to start game
-            timer.innerText = 'Game Over!'
-            stopGameLoop()
-            document.querySelector('#btmRight > h2').innerText = 'You Lose!'
-        }
+  // Collisions: player vs ufos (lose)
+  for (const u of STATE.ufos) {
+    if (dist(p.x, p.y, u.x, u.y) <= p.r + u.r) {
+      endGame('Crashed into a UFO!');
+      return;
     }
-    // when asteroid 1 dies, spawn UFO's, run detect hit on UFO's, but make the logic dependent on that asteroid's alive
-    // render my player
-    player.movePlayer()
+  }
+
+  // Spawning
+  const now = performance.now();
+  if (now >= STATE.nextAsteroidIn) {
+    STATE.asteroids.push(makeAsteroid());
+    scheduleNextAsteroid();
+  }
+  if (now >= STATE.nextUfoIn) {
+    STATE.ufos.push(makeUfo(Math.random() < 0.5 ? 'black' : 'green'));
+    scheduleNextUfo();
+  }
+
+  // Timer UI
+  const elapsed = Math.max(0, Math.floor((now - STATE.startedAt) / 1000));
+  if ($timerEl) $timerEl.textContent = `Time: ${elapsed}s`;
 }
 
-
-// /using a different event handler for smooth movement
-// I have two events now that I need to determine, I also will need to call player.move in the gameloop
-document.addEventListener('keydown', (e) => {
-    // console.log('keydown', 'setDirection')
-    player.setDirection(e.key)
-})
-// this will unset direction
-document.addEventListener('keyup', (e) => {
-    // console.log('keyup')
-    if (['w', 'a', 's', 'd'].includes(e.key)) {
-        // console.log('unsetDirection')
-        player.unsetDirection(e.key)
-    }
-})
-
-
-// I also need to declare a function that will stop my animation loop
-let stopGameLoop = () => {
-    console.log('stopGameLoop')
-    clearInterval(gameInterval)
-    let startDiv = document.getElementById("start")
-    startDiv.style.display = "block"
+function wrapEntity(e) {
+  if (!CONFIG.wrap) return;
+  if (e.x < -e.r) e.x = canvas.clientWidth + e.r;
+  if (e.x > canvas.clientWidth + e.r) e.x = -e.r;
+  if (e.y < -e.r) e.y = canvas.clientHeight + e.r;
+  if (e.y > canvas.clientHeight + e.r) e.y = -e.r;
 }
 
+function draw() {
+  // Background
+  ctx.fillStyle = '#0d0d0d';
+  ctx.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 
-// function stopGameLoop()
-// {
-//     let startDiv = document.getElementById("start")
-//     // let canvas = document.getElementById("canvas")
-//     let gameOver = document.getElementById("game-over")
-//     startDiv.style.display = "block"
-//     // canvas.style.display = "none"
-//     // gameOver.style.display = "block"
-//     clearInterval(gameInterval)
-//     // start()
-// }
+  // Stars (simple parallax-like sprinkle)
+  // (cheap: random static noise feel)
+  // You can comment this out if you want a solid background
+  for (let i = 0; i < 60; i++) {
+    ctx.globalAlpha = 0.15;
+    ctx.fillStyle = '#ffffff';
+    const x = (i * 73) % canvas.clientWidth;
+    const y = (i * 137) % canvas.clientHeight;
+    ctx.fillRect(x, y, 2, 2);
+  }
+  ctx.globalAlpha = 1;
 
-// function gameOver() {
-//     let startDiv = document.getElementById("start")
-//     let canvas = document.getElementById("canvas")
-//     let gameOver = document.getElementById("game-over")
-//     startDiv.style.display = "none"
-//     gameCanvas.style.display = "none"
-//     gameOver.style.display = "block"
+  // Draw asteroids (blue)
+  for (const a of STATE.asteroids) {
+    ctx.beginPath();
+    ctx.fillStyle = a.color;
+    ctx.arc(a.x, a.y, a.r, 0, Math.PI * 2);
+    ctx.fill();
+  }
 
-//     player.reset()
-//     asteroidArr.reset()
-//     ufoArr.reset()
+  // Draw ufos (black/green discs with outline)
+  for (const u of STATE.ufos) {
+    ctx.beginPath();
+    ctx.fillStyle = u.color === 'green' ? '#2ecc71' : '#000000';
+    ctx.arc(u.x, u.y, u.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#13ff00';
+    ctx.stroke();
+  }
 
-//     clearInterval(loop)
-// }
-
-
-
-function startGame() {
-    player = new PlayerShip(700, 600, '#71FF69', 25, 25)
-    console.log('start Game')
-    let startDiv = document.getElementById("start")
-    // let canvas = document.getElementById("canvas")
-    let gameOver = document.getElementById("game-over")
-    let instructDiv = document.getElementById("instruct")
-    instructDiv.style.display = "none"
-    startDiv.style.display = "none"
-    canvas.style.display = "block"
-    gameOver.style.display = "none"
-    gameInterval = setInterval(gameLoop, 60)
-
+  // Draw player (white triangle ship)
+  drawPlayerShip(STATE.player);
 }
+
+function drawPlayerShip(p) {
+  if (!p) return;
+  const angle = Math.atan2(p.vy, p.vx) || 0; // aim ship where it moves
+  const r = p.r;
+
+  ctx.save();
+  ctx.translate(p.x, p.y);
+  ctx.rotate(angle);
+
+  // Ship body
+  ctx.beginPath();
+  ctx.moveTo(r, 0);
+  ctx.lineTo(-r * 0.7, r * 0.6);
+  ctx.lineTo(-r * 0.7, -r * 0.6);
+  ctx.closePath();
+  ctx.fillStyle = '#ffffff';
+  ctx.fill();
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = '#5dade2';
+  ctx.stroke();
+
+  // Thruster flicker if moving
+  if (Math.hypot(p.vx, p.vy) > 0.5) {
+    ctx.beginPath();
+    ctx.moveTo(-r * 0.7, 0);
+    ctx.lineTo(-r * 1.2, 3);
+    ctx.lineTo(-r * 1.2, -3);
+    ctx.closePath();
+    ctx.fillStyle = '#ff9900';
+    ctx.fill();
+  }
+
+  ctx.restore();
+}
+
+function loop(ts) {
+  if (!STATE.running) return;
+  if (!lastTs) lastTs = ts;
+  const dt = Math.min(33, ts - lastTs) / (1000 / 60); // normalize ~60fps
+  lastTs = ts;
+
+  update(dt);
+  draw();
+
+  rafId = requestAnimationFrame(loop);
+}
+
+// -------- UI Helpers -------------
+function updateScoreUI() {
+  if ($scoreEl) $scoreEl.textContent = `Score: ${STATE.score}`;
+}
+
+let statusTimeout = null;
+function pulseStatus(msg) {
+  if (!$statusEl) return;
+  $statusEl.textContent = msg;
+  clearTimeout(statusTimeout);
+  statusTimeout = setTimeout(() => {
+    if ($statusEl.textContent === msg) $statusEl.textContent = '';
+  }, 800);
+}
+
+function showStartUI() {
+  $start.style.display = 'block';
+  $gameOver.style.display = 'none';
+}
+function showGameOverUI() {
+  $start.style.display = 'none';
+  $gameOver.style.display = 'block';
+}
+function hideMenus() {
+  $start.style.display = 'none';
+  $gameOver.style.display = 'none';
+}
+
+// -------- Public Controls (HTML onclick hooks) ----------
+window.startGame = function startGame() {
+  // Reset state
+  STATE.running = true;
+  STATE.over = false;
+  STATE.startedAt = performance.now();
+  STATE.player = makePlayer();
+  STATE.asteroids = [];
+  STATE.ufos = [];
+  STATE.score = 0;
+  updateScoreUI();
+  if ($statusEl) $statusEl.textContent = '';
+  if ($timerEl) $timerEl.textContent = 'Time: 0s';
+  updateMovementFromKeys();
+  scheduleNextAsteroid();
+  scheduleNextUfo();
+  hideMenus();
+
+  cancelAnimationFrame(rafId);
+  lastTs = 0;
+  rafId = requestAnimationFrame(loop);
+};
+
+function endGame(reason = 'Game Over') {
+  STATE.running = false;
+  STATE.over = true;
+  cancelAnimationFrame(rafId);
+  rafId = null;
+  if ($statusEl) $statusEl.textContent = reason;
+  showGameOverUI();
+}
+
+// If user refreshes mid-game, show start
+showStartUI();

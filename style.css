@@ -88,7 +88,6 @@ h1, h2 {
 #start {
   font-family:'Press Start 2P';
   color: rgb(113, 255, 105);
-  /* padding-top: 100px; */
   position: absolute;
   top:70%;
   left:50%;

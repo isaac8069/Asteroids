@@ -1,53 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <title>Asteroids</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <h1>Asteroids</h1>
+
   <div id="container">
     <div id="instruct">
-      <form>
-        <fieldset>
-          <legend id="instructions">Instructions</legend>
-            <div>
-              <label id="howToPlay">Smash into the blue Asteroids for points. Try to get as many points as you can. Avoid hitting the black and green UFO's. If you hit them you will lose the game. <b id="bold">Keys: w-UP, a-LEFT, s-DOWN, d-RIGHT.</b> You can also move diagonally by pressing the correct two keys together. Example: w+a will move upwards to the left. Hold keys down to move rapidly.</label>
-            </div>
-        </fieldset>
-      </form>
+      <fieldset>
+        <legend id="instructions">Instructions</legend>
+        <p id="howToPlay">
+          Smash into the blue asteroids for points. Try to get as many points as you can. Avoid hitting the black and green UFOs—if you hit them, you lose the game.
+          <br /><br />
+          <b>Keys: W/A/S/D or Arrow Keys (↑, ←, ↓, →).</b>
+          You can also move diagonally by pressing two keys together (e.g., W + A = up-left). Hold keys down to move continuously.
+        </p>
+      </fieldset>
     </div>
+
     <h2 id="timer"></h2>
+
     <div id="start">
-      <a href="#" onclick="startGame()">Start Game</a>
+      <button type="button" onclick="startGame()">Start Game</button>
     </div>
-    <div id="game-over" style="display:none">
-      <a href="#" >Restart Game</a>
-      <!-- <h1>Game Over</h1> -->
+
+    <div id="game-over" style="display: none">
+      <button type="button" onclick="startGame()">Restart Game</button>
     </div>
+
     <aside id="topLeft"><h2></h2></aside>
     <aside id="topRight"><h2 id="movement"></h2></aside>
+
     <main>
-      <canvas id="canvas" id=></canvas>
+      <canvas id="canvas"></canvas>
     </main>
-    <aside id="btmLeft"><h2></h2></aside>
+
+    <aside id="btmLeft"><h2>Score: 0</h2></aside>
     <aside id="btmRight"><h2 id="status"></h2></aside>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-<!-- <button id="start">Start Game</button> -->
-    <!-- <button id="reset">Restart Game</button> -->
-    <!-- creat a button type = button. in the JS i am going to link this button to my game loop. so instead of game auto starting,the game should start when the button is clicked. Give the display of none while its playing and then a display of block when the game is over. The display block functionallity will come in play in the exact same place as the game over innerText is located -->
